@@ -23,11 +23,11 @@ Imager::Bing::MapLayer - create a map layer for Bing Maps
 
 =head1 VERSION
 
-Version v0.1.0
+Version v0.1.1
 
 =cut
 
-use version 0.77; our $VERSION = version->declare('v0.1.0');
+use version 0.77; our $VERSION = version->declare('v0.1.1');
 
 =head1 SYNOPSIS
 
@@ -41,7 +41,7 @@ use version 0.77; our $VERSION = version->declare('v0.1.0');
       combine            => 'darken', # tile composition method (default)
     );
 
-    # Plot polygons (e.g. postcodes)
+    # Plot polygons (e.g. geographic boundaries)
 
     $layer->polygon(
        points => $points,                  # listref to [ lat, lon ] points
@@ -73,6 +73,8 @@ coordinates.
 
 The module will automatically map them to the appropriate points on
 tile files.
+
+=for readme stop
 
 =head1 ATTRIBUTES
 
@@ -431,10 +433,10 @@ sub save {
 
 =head1 KNOWN ISSUES
 
-For plotting very large polylines and polygones (e.g. postcode
-district C<E17>), the system will die with no error message.
+For plotting very large polylines and polygons, the system will die
+with no error message.
 
-See the F<TODO> file for other known issues and unimplemented features.
+=for readme continue
 
 =head1 SEE ALSO
 
@@ -492,4 +494,4 @@ This program is released under the following license: atistic2
 
 use namespace::autoclean;
 
-1; # End of Imager::Bing::MapLayer
+1;    # End of Imager::Bing::MapLayer
