@@ -12,7 +12,6 @@ build_requires:
   Test::Warnings: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.59
-  Module::Install: 0
 distribution_type: module
 dynamic_config: 1
 generated_by: 'Module::Install version 1.06'
@@ -49,4 +48,4 @@ resources:
   homepage: http://rrwo.tumblr.com
   license: artistic2
   repository: git://github.com/robrwo/Imager-Bing-MapLayer.git
-version: 0.001001
+version: 0.001002
