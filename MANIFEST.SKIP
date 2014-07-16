@@ -3,3 +3,9 @@
 ~$
 \.bak$
 Imager-Bing-MapLayer-.*\.tar\.gz
+
+^\.travis\.yml$
+
+# Exclude QA tests
+
+^xt/
