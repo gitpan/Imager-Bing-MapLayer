@@ -26,7 +26,7 @@ Imager::Bing::MapLayer - create a map layer for Bing Maps
 
 =cut
 
-use version 0.77; our $VERSION = version->declare('v0.1.5');
+use version 0.77; our $VERSION = version->declare('v0.1.6');
 
 =head1 SYNOPSIS
 
@@ -295,6 +295,8 @@ have a point plotted.
 
 =head2 C<colourise>
 
+=head2 C<colorize>
+
     $layer->colourise();
 
 The method colourises greyscale layers.  It is intended to be used for
@@ -374,7 +376,7 @@ See the corresponding method in L<Imager::Draw> for more information.
 
 foreach my $method (
     qw/
-    radial_circle colourise
+    radial_circle colourise colorize
     filter setpixel line box polyline polygon arc circle flood_fill
     string align_string
     /

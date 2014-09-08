@@ -17,7 +17,7 @@ use List::Util 1.30 qw/ min pairmap /;
 
 use namespace::autoclean;
 
-use version 0.77; our $VERSION = version->declare('v0.1.5');
+use version 0.77; our $VERSION = version->declare('v0.1.6');
 
 =head1 NAME
 
@@ -49,8 +49,8 @@ The coordinates of the top-left point on the image.
 =cut
 
 has 'pixel_origin' => (
-    is		=> 'ro',
-    isa		=> 'ArrayRef',
+    is  => 'ro',
+    isa => 'ArrayRef',
 );
 
 =head2 C<width>
@@ -92,8 +92,8 @@ has 'left' => (
         my $origin = $self->pixel_origin;
         return $origin->[0];
     },
-    lazy => 1,
-    init_arg	=> undef,
+    lazy     => 1,
+    init_arg => undef,
 );
 
 =head2 C<top>
@@ -111,8 +111,8 @@ has 'top' => (
         my $origin = $self->pixel_origin;
         return $origin->[1];
     },
-    lazy => 1,
-    init_arg	=> undef,
+    lazy     => 1,
+    init_arg => undef,
 );
 
 =head2 C<right>
@@ -128,8 +128,8 @@ has 'right' => (
         my ($self) = @_;
         return $self->left + $self->width - 1;
     },
-    lazy => 1,
-    init_arg	=> undef,
+    lazy     => 1,
+    init_arg => undef,
 );
 
 =head2 C<bottom>
@@ -145,8 +145,8 @@ has 'bottom' => (
         my ($self) = @_;
         return $self->top + $self->height - 1;
     },
-    lazy => 1,
-    init_arg	=> undef,
+    lazy     => 1,
+    init_arg => undef,
 );
 
 =head2 C<image>
@@ -542,6 +542,8 @@ sub radial_circle {
 
 =head2 C<colourise>
 
+=head2 C<colorize>
+
     $tile->colourise();
 
 The method colourises greyscale tiles.
@@ -584,6 +586,11 @@ sub colourise {
     }
 
     return 1;
+}
+
+sub colorize {
+    my ( $self, %args ) = @_;
+    $self->colourise(%args);
 }
 
 1;
