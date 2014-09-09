@@ -16,7 +16,7 @@ configure_requires:
   ExtUtils::MakeMaker: 6.59
 distribution_type: module
 dynamic_config: 1
-generated_by: 'Module::Install version 1.06'
+generated_by: 'Module::Install version 1.10'
 license: artistic_2
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -32,6 +32,7 @@ recommends:
 requires:
   Carp: 0
   Class::MOP::Method: 0
+  Const::Exporter: 0
   Const::Fast: 0
   Cwd: 0
   Exporter::Lite: 0
@@ -53,4 +54,4 @@ resources:
   homepage: http://rrwo.tumblr.com
   license: artistic2
   repository: git://github.com/robrwo/Imager-Bing-MapLayer.git
-version: 0.001006
+version: 0.001007

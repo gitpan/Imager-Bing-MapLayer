@@ -17,7 +17,7 @@ use List::Util 1.30 qw/ min pairmap /;
 
 use namespace::autoclean;
 
-use version 0.77; our $VERSION = version->declare('v0.1.6');
+use version 0.77; our $VERSION = version->declare('v0.1.7');
 
 =head1 NAME
 
@@ -32,6 +32,10 @@ Imager::Bing::MapLayer::Image - a wrapper for L<Imager> objects
     );
 
 =head1 DESCRIPTION
+
+This module is for internal use by L<Imager::Bing::MapLayer>.
+
+=begin :internal
 
 This is a base class for images that acts as a wrapper around
 L<Imager> but automatically translates coordinates from the pixel
@@ -179,9 +183,14 @@ has 'image' => (
         return $image;
     },
     init_arg => undef,
+    handles  => [qw/ errstr getwidth getheight /],
 );
 
 =head1 METHODS
+
+=head2 C<errstr>
+
+The L<Imager> error string.
 
 =cut
 
@@ -592,5 +601,11 @@ sub colorize {
     my ( $self, %args ) = @_;
     $self->colourise(%args);
 }
+
+=end :internal
+
+=cut
+
+use namespace::autoclean;
 
 1;

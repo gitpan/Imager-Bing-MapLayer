@@ -26,7 +26,7 @@ use Imager::Bing::MapLayer::Utils qw/
 use Imager::Bing::MapLayer::Image;
 use Imager::Bing::MapLayer::Tile;
 
-use version 0.77; our $VERSION = version->declare('v0.1.6');
+use version 0.77; our $VERSION = version->declare('v0.1.7');
 
 =head1 NAME
 
@@ -49,6 +49,10 @@ Imager::Bing::MapLayer::Level - zoom levels for Bing Maps
     );
 
 =head1 DESCRIPTION
+
+This module is for internal use by L<Imager::Bing::MapLayer>.
+
+=begin :internal
 
 This module supports drawing on specific zoom levels.
 
@@ -105,8 +109,6 @@ has 'last_cleanup_time' => (
     default => sub { return time; },
 );
 
-=begin :internal
-
 =head2 C<_max_buffer_breadth>
 
 The maximum width and height of the temporary L<Imager> image.
@@ -114,14 +116,12 @@ The maximum width and height of the temporary L<Imager> image.
 Generally, you do not need to be concerned with this parameter, unless
 you get C<malloc> errors when rendering tiles.
 
-=end :internal
-
 =cut
 
 has '_max_buffer_breadth' => (
     is      => 'ro',
     isa     => 'Int',
-    default => 8000,
+    default => 1024 * 4,    #
 );
 
 =head1 METHODS
@@ -162,8 +162,6 @@ sub latlon_to_pixel {
     return Imager::Bing::MapLayer::Utils::latlon_to_pixel( $self->level,
         @latlon );
 }
-
-=begin :internal
 
 =head2 C<_translate_points>
 
@@ -485,20 +483,24 @@ sub _make_imager_wrapper_method {
 
             # TODO - get* methods should be handled differently.
 
-            my ( $this_left, $this_top, $this_right, $this_bottom )
-                = ( $left, $top, $right, $bottom );
+            my ( $this_left, $this_top ) = ( $left, $top, $right, $bottom );
 
-            while ( $this_left <= $this_right ) {
+            while ( $this_left <= $right ) {
 
-                while ( $this_top <= $this_bottom ) {
+                while ( $this_top <= $bottom ) {
 
                     my ( $this_width, $this_height ) = (
-                        min(1 + $this_right - $this_left,
+                        min(1 + $right - $this_left,
                             $self->_max_buffer_breadth
                         ),
-                        min(1 + $this_bottom - $this_top,
+                        min(1 + $bottom - $this_top,
                             $self->_max_buffer_breadth
                         )
+                    );
+
+                    my ( $this_right, $this_bottom ) = (
+                        $this_left + $this_width - 1,
+                        $this_top + $this_height - 1
                     );
 
                     # Note: we cannot catch malloc errors if the image
@@ -577,50 +579,50 @@ sub _make_imager_wrapper_method {
                                     my $crop_top
                                         = max( $this_top, $tile->top );
 
-                                    my $crop = $image->crop(
-                                        left  => $crop_left,
-                                        top   => $crop_top,
-                                        width => 1 + min(
-                                            $this_right - $crop_left,
-                                            $tile->right - $crop_left
-                                        ),
-                                        height => 1 + min(
-                                            $this_bottom - $crop_top,
-                                            $tile->bottom - $crop_top
-                                        ),
+                                    my $crop_width = 1 + min(
+                                        $this_right - $crop_left,
+                                        $tile->right - $crop_left
                                     );
 
-                                    if ($crop) {
+                                    my $crop_height = 1 + min(
+                                        $this_bottom - $crop_top,
+                                        $tile->bottom - $crop_top
+                                    );
 
-                                        $tile->compose(
-                                            src     => $crop,
-                                            left    => $crop_left,
-                                            top     => $crop_top,
-                                            width   => $crop->getwidth,
-                                            height  => $crop->getheight,
-                                            combine => $self->combine,
-                                        );
+                                    my $crop = $image->crop(
+                                        left   => $crop_left,
+                                        top    => $crop_top,
+                                        width  => $crop_width,
+                                        height => $crop_height,
+                                    ) or confess $image->errstr;
 
-                                        $crop = undef
-                                            ;    # force garbage collection
+                                    $tile->compose(
+                                        src     => $crop,
+                                        left    => $crop_left,
+                                        top     => $crop_top,
+                                        width   => $crop->getwidth,
+                                        height  => $crop->getheight,
+                                        combine => $self->combine,
+                                    );
 
-                                        if ( $self->in_memory ) {
+                                    # force garbage collection
+                                    $crop = undef;
 
-                                            $timeouts->{$key}
-                                                = time() + $self->in_memory;
+                                    if ( $self->in_memory ) {
 
-                                            $self->_cleanup_tiles();
+                                        $timeouts->{$key}
+                                            = time() + $self->in_memory;
 
-                                        } else {
+                                        $self->_cleanup_tiles();
 
-                                            # See comments about regarding
-                                            # autosave consistency.
+                                    } else {
 
-                                            $tile->save;
+                                        # See comments about regarding
+                                        # autosave consistency.
 
-                                            $tiles->{$key} = undef;
+                                        $tile->save;
 
-                                        }
+                                        $tiles->{$key} = undef;
 
                                     }
 
@@ -718,8 +720,6 @@ __PACKAGE__->_make_imager_wrapper_method(
         ],
     }
 );
-
-=end :internal
 
 # TODO/FIXME - generic method with callbacks to apply a function to a
 # all tiles on a level?
@@ -837,6 +837,10 @@ sub save {
         $tile->save(@args) if ($tile);
     }
 }
+
+=end :internal
+
+=cut
 
 use namespace::autoclean;
 
