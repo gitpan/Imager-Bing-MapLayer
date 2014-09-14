@@ -26,7 +26,7 @@ use Imager::Bing::MapLayer::Utils qw/
 use Imager::Bing::MapLayer::Image;
 use Imager::Bing::MapLayer::Tile;
 
-use version 0.77; our $VERSION = version->declare('v0.1.8');
+use version 0.77; our $VERSION = version->declare('v0.1.9');
 
 =head1 NAME
 
@@ -431,9 +431,9 @@ sub _cleanup_tiles {
 
         }
 
+        $self->_last_cleanup_time($time);
     }
 
-    $self->_last_cleanup_time($time);
 }
 
 =head2 C<_make_imager_wrapper_method>
